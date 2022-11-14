@@ -23,3 +23,9 @@ const db = getFirestore(firebaseApp);
 console.log('firebaseApp: ', firebaseApp);
 console.log('db: ', db);
 window.firebasedb = db;
+
+const collectionChats = collection(db, 'chats');
+getDocs(collectionChats)
+  .then((snapshot) => {
+    console.log(snapshot.docs);
+  });
