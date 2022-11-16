@@ -28,6 +28,9 @@ window.addEventListener('DOMContentLoaded', (e) => {
       snapshot.docs.forEach((doc) => {
         chats.push({...doc.data(), id: doc.id});
       });
+    })
+    .catch(error => {
+      console.log('error: ', error.message);
     });
 });
 
@@ -36,6 +39,6 @@ addMsgForm.addEventListener('submit', e => {
   e.preventDefault();
 
   addDoc(chatsRef, {
-    message
+    message: document.getElementById('message').value
   })
 });
