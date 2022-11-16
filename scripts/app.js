@@ -6,6 +6,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js';
 
 const config = new Config();
+const chatMsgInpt = document.getElementById('message');
 
 const firebaseConfig = {
   apiKey: config.apiKey,
@@ -39,6 +40,9 @@ addMsgForm.addEventListener('submit', e => {
   e.preventDefault();
 
   addDoc(chatsRef, {
-    message: document.getElementById('message').value
+    message: chatMsgInpt.value
   })
+  .then(() => {
+    addMsgForm.reset();
+  });
 });
