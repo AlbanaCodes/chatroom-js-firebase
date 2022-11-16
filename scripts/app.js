@@ -1,12 +1,10 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js';
-import {
-    getFirestore, collection, query,
-    getDocs, where, orderBy, setDoc, doc,
-    deleteDoc, addDoc
-} from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js';
+import { getFirestore, collection, query, getDocs, where, orderBy, setDoc, doc, deleteDoc, addDoc, serverTimestamp } 
+  from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js';
 
 const config = new Config();
 const chatMsgInpt = document.getElementById('message');
+const usernameStrong = document.getElementById('usernameStrong');
 
 const firebaseConfig = {
   apiKey: config.apiKey,
@@ -20,8 +18,8 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
-
 const chatsRef = collection(db, 'chats');
+
 window.addEventListener('DOMContentLoaded', (e) => {
   getDocs(chatsRef)
     .then((snapshot) => {
@@ -40,9 +38,13 @@ addMsgForm.addEventListener('submit', e => {
   e.preventDefault();
 
   addDoc(chatsRef, {
-    message: chatMsgInpt.value
+    username: usernameStrong.textContent,
+    message: chatMsgInpt.value,
+    room: 'general',
+    created_at: serverTimestamp ()
   })
   .then(() => {
     addMsgForm.reset();
-  });
+  })
+  .catch(err => console.log('error while adding document: ', err.message));
 });
