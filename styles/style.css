@@ -10,3 +10,8 @@
 .btn:focus{
     outline: none !important;
 }
+
+.btn_active{
+    border-color: blueviolet;
+    background-color: rgb(115, 116, 141);
+}

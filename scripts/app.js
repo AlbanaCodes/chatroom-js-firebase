@@ -1,10 +1,15 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js';
-import { getFirestore, collection, query, getDocs, where, orderBy, setDoc, doc, deleteDoc, addDoc, serverTimestamp, onSnapshot } 
+import { getFirestore, collection, query, getDocs, where, orderBy, setDoc, doc, deleteDoc, addDoc, serverTimestamp, 
+         onSnapshot } 
   from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js';
 
 const config = new Config();
 const chatMsgInpt = document.getElementById('message');
 const usernameStrong = document.getElementById('usernameStrong');
+let selectedRoomBtn = document.querySelector('.btn_active');
+let selectedRoom = selectedRoomBtn.innerText.slice(1);
+console.log('selectedRoomBtn: ', selectedRoomBtn);
+console.log('selectedRoom: ', selectedRoom);
 
 const firebaseConfig = {
   apiKey: config.apiKey,
@@ -20,8 +25,11 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 const chatsRef = collection(db, 'chats');
 
+// queries 
+const q = query(chatsRef, where("room" ,"==", selectedRoom));
+
 window.addEventListener('DOMContentLoaded', (e) => {
-  onSnapshot(chatsRef, (snapshot) => {
+  onSnapshot(q, (snapshot) => {
     let chats = [];
     snapshot.docs.forEach((doc) => {
       chats.push({...doc.data()});
@@ -33,11 +41,11 @@ window.addEventListener('DOMContentLoaded', (e) => {
 const addMsgForm = document.querySelector('.new-chat');
 addMsgForm.addEventListener('submit', e => {
   e.preventDefault();
-
+  
   addDoc(chatsRef, {
     username: usernameStrong.textContent,
     message: chatMsgInpt.value,
-    room: 'general',
+    room: selectedRoom,
     created_at: serverTimestamp ()
   })
   .then(() => {
