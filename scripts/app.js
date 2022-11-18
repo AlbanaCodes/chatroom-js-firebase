@@ -26,7 +26,7 @@ const db = getFirestore(firebaseApp);
 const chatsRef = collection(db, 'chats');
 
 // queries 
-const q = query(chatsRef, where("room" ,"==", selectedRoom));
+const q = query(chatsRef, where("room" ,"==", selectedRoom), orderBy("created_at"));
 
 window.addEventListener('DOMContentLoaded', (e) => {
   onSnapshot(q, (snapshot) => {
