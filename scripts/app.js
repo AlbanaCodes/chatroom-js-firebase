@@ -11,7 +11,7 @@ let selectedRoom = selectedRoomBtn.innerText.slice(1);
 console.log('selectedRoomBtn: ', selectedRoomBtn);
 console.log('selectedRoom: ', selectedRoom);
 const usernameInput = document.getElementById('username');
-let chatList = document.querySelector('.chat-list');
+const chatList = document.querySelector('.chat-list');
 
 const firebaseConfig = {
   apiKey: config.apiKey,
@@ -26,12 +26,10 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 const chatsRef = collection(db, 'chats');
-let chats = [];
 
 const sub = () => {
   // queries 
   let q = query(chatsRef, where("room" ,"==", selectedRoom), orderBy("created_at"));
-  chats = [];
 
   //const unsubRoom = 
   onSnapshot(q, 
@@ -51,7 +49,6 @@ const sub = () => {
           //chats.push({...change.doc.data()});
         }
       });
-      //renderChat
     },
     (error) => {
       console.log('error: ', error.message);
@@ -61,15 +58,17 @@ const sub = () => {
 sub();
 
 const renderChat = (chatObj) => {
-  console.log('chatObj: ', chatObj);
+  const when = dateFns.distanceInWordsToNow(
+    chatObj.created_at.toDate(),
+    {addSuffix: true}
+  )
   const html = `
   <li class='list-group-item'>
-    <span class='username">${chatObj.usernam}</span>
-    <span class='message">${chatObj.message}</span>
-    <div class='time'>${chatObj.created_at.toDate()}</div>
+    <span class='username'>${chatObj.username}:</span>
+    <span class='message'>${chatObj.message}</span>
+    <div class='time'>${when}</div>
   </li>
   `;
-
   chatList.innerHTML += html;
 };
 
