@@ -11,6 +11,7 @@ let selectedRoom = selectedRoomBtn.innerText.slice(1);
 console.log('selectedRoomBtn: ', selectedRoomBtn);
 console.log('selectedRoom: ', selectedRoom);
 const usernameInput = document.getElementById('username');
+let chatList = document.querySelector('.chat-list');
 
 const firebaseConfig = {
   apiKey: config.apiKey,
@@ -25,27 +26,52 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 const chatsRef = collection(db, 'chats');
+let chats = [];
 
 const sub = () => {
   // queries 
   let q = query(chatsRef, where("room" ,"==", selectedRoom), orderBy("created_at"));
+  chats = [];
 
   //const unsubRoom = 
   onSnapshot(q, 
-    (snapshot) => {
-      let chats = [];
-      snapshot.docs.forEach((doc) => {
-        chats.push({...doc.data()});
-      });
-      console.log('chats: ', chats); // we get the added chat twice in the log. this happens because of the timestamp
+    (snapshot) => {      
+      // snapshot.docs.forEach((doc) => {
+      //   console.log('doctype: ', doc.type);
+      //   console.log('snapload');
+      //   chats.push({...doc.data()});
+      // });
+      //console.log('chats: ', chats); // we get the added chat twice in the log. this happens because of the timestamp
       // created_at. becaue we add the document in the addMsgForm submit event, and when it gets the server time
       // it has a difference and considers it as edited. and it returns it as such (edit). that's why in shows the log twice
+
+      snapshot.docChanges().forEach(change => {
+        if(change.doc.data().created_at !== null){
+          renderChat(change.doc.data());
+          //chats.push({...change.doc.data()});
+        }
+      });
+      //renderChat
     },
     (error) => {
       console.log('error: ', error.message);
-  });
+    }
+  );
 };
 sub();
+
+const renderChat = (chatObj) => {
+  console.log('chatObj: ', chatObj);
+  const html = `
+  <li class='list-group-item'>
+    <span class='username">${chatObj.usernam}</span>
+    <span class='message">${chatObj.message}</span>
+    <div class='time'>${chatObj.created_at.toDate()}</div>
+  </li>
+  `;
+
+  chatList.innerHTML += html;
+};
 
 const addMsgForm = document.querySelector('.new-chat');
 addMsgForm.addEventListener('submit', e => {
@@ -75,17 +101,12 @@ editUsernameForm.addEventListener('submit', e => {
 });
 
 const updateRoom = (room) => {
-  // if(unsubRoom){
-  //   console.log('unsub has value');
-  //   unsubRoom();
-  // }
-  // console.log('unsub: ', unsubRoom);
-  // subChats();
-  selectedRoom = 'gaming';
+  chatList.innerHTML = '';
+  selectedRoom = room;
   sub();
 };
 
 selectedRoomBtn.addEventListener('click', e => {
   e.preventDefault();
-  updateRoom('test2');
+  updateRoom('gaming');
 });
