@@ -7,4 +7,4 @@ Some of the differences and things to keep in mind:
   - config.js will not be tracked for changes because of the firestore credentials
   - things that are in overall different from firebase version 5
   - not using class and contructors for the operations
-  - playing around and doing strange (but working) things
+  - playing around and using different approaches to do things
