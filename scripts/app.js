@@ -6,12 +6,14 @@ import { getFirestore, collection, query, getDocs, where, orderBy, setDoc, doc, 
 const config = new Config();
 const chatMsgInpt = document.getElementById('message');
 const usernameStrong = document.getElementById('usernameStrong');
-let selectedRoomBtn = document.querySelector('.btn_active');
-let selectedRoom = selectedRoomBtn.innerText.slice(1);
-console.log('selectedRoomBtn: ', selectedRoomBtn);
-console.log('selectedRoom: ', selectedRoom);
+let selectedRoom = 'general';
+// let selectedRoomBtn = document.querySelector('.btn_active');
+// let selectedRoom = selectedRoomBtn.innerText.slice(1);
+// console.log('selectedRoomBtn: ', selectedRoomBtn);
+// console.log('selectedRoom: ', selectedRoom);
 const usernameInput = document.getElementById('username');
 const chatList = document.querySelector('.chat-list');
+const rooms = document.querySelector('.chat-rooms');
 
 const firebaseConfig = {
   apiKey: config.apiKey,
@@ -45,6 +47,7 @@ const sub = () => {
 
       snapshot.docChanges().forEach(change => {
         if(change.doc.data().created_at !== null){
+          console.log('chat: ', change.doc.data());
           renderChat(change.doc.data());
           //chats.push({...change.doc.data()});
         }
@@ -61,7 +64,8 @@ const renderChat = (chatObj) => {
   const when = dateFns.distanceInWordsToNow(
     chatObj.created_at.toDate(),
     {addSuffix: true}
-  )
+  );
+
   const html = `
   <li class='list-group-item'>
     <span class='username'>${chatObj.username}:</span>
@@ -99,13 +103,15 @@ editUsernameForm.addEventListener('submit', e => {
   editUsernameForm.reset();
 });
 
+//update chatroom
 const updateRoom = (room) => {
   chatList.innerHTML = '';
   selectedRoom = room;
   sub();
 };
 
-selectedRoomBtn.addEventListener('click', e => {
-  e.preventDefault();
-  updateRoom('gaming');
+rooms.addEventListener('click', e => {
+  if(e.target.tagName === 'BUTTON'){
+    updateRoom(e.target.getAttribute('id'));
+  }
 });
