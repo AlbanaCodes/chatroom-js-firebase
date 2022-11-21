@@ -7,10 +7,6 @@ const config = new Config();
 const chatMsgInpt = document.getElementById('message');
 const usernameStrong = document.getElementById('usernameStrong');
 let selectedRoom = 'general';
-// let selectedRoomBtn = document.querySelector('.btn_active');
-// let selectedRoom = selectedRoomBtn.innerText.slice(1);
-// console.log('selectedRoomBtn: ', selectedRoomBtn);
-// console.log('selectedRoom: ', selectedRoom);
 const usernameInput = document.getElementById('username');
 const chatList = document.querySelector('.chat-list');
 const rooms = document.querySelector('.chat-rooms');
@@ -33,23 +29,11 @@ const sub = () => {
   // queries 
   let q = query(chatsRef, where("room" ,"==", selectedRoom), orderBy("created_at"));
 
-  //const unsubRoom = 
   onSnapshot(q, 
     (snapshot) => {      
-      // snapshot.docs.forEach((doc) => {
-      //   console.log('doctype: ', doc.type);
-      //   console.log('snapload');
-      //   chats.push({...doc.data()});
-      // });
-      //console.log('chats: ', chats); // we get the added chat twice in the log. this happens because of the timestamp
-      // created_at. becaue we add the document in the addMsgForm submit event, and when it gets the server time
-      // it has a difference and considers it as edited. and it returns it as such (edit). that's why in shows the log twice
-
       snapshot.docChanges().forEach(change => {
         if(change.doc.data().created_at !== null){
-          console.log('chat: ', change.doc.data());
           renderChat(change.doc.data());
-          //chats.push({...change.doc.data()});
         }
       });
     },
