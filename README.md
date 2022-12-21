@@ -2,7 +2,8 @@
 
 A chatroom website build with vanilla JavaScript, firebase and bootstrap.
 
-This is a project inspired by this [project](https://github.com/iamshaunjp/modern-javascript/tree/lesson-136/chat_project)
+##
+This project inspired by this [project](https://github.com/iamshaunjp/modern-javascript/tree/lesson-136/chat_project)
 
 In my version I will use the firebase version 9 and made some other changes.
 
